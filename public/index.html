@@ -1,0 +1,76 @@
+<html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+<input type="file" name="file[]" id="file_multi_video" accept="video/image/*">
+
+	<div>
+		<h2>Video Elements</h2>
+		<h3>Video1</h3>
+		<video width="400" controls>
+			<source src="" id="video_here">
+			Your browser does not support HTML5 video.
+		</video>
+
+		<h3>Video2</h3>
+		<video controls class="video" width="400">
+		</video>
+	</div>
+
+	<div>
+		<h2>Image Element</h2>
+		<form id="form">
+			<input type="text" name="aaa" value="fwefwefwefwef"/>
+			<img src="" class="image" width="400">
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+	$(document).on("change", "#file_multi_video", function (evt) {
+		var inputDom = document.getElementById('file_multi_video');
+		var files = inputDom.files[0];
+
+		var url = URL.createObjectURL(files);
+		var type = files.type;
+		console.log(url, type)
+
+		if (type.includes('image')) {
+			$(".image").attr("src", url);
+			uploadFile(files)
+		} else {
+			var $source = $('#video_here');
+			$source[0].src = url;
+			$source.parent()[0].load();
+
+			$(".video").attr("src", url);
+			uploadFile(files)
+		}
+	});
+
+	function uploadFile(data, el) {
+		var dataimg = new FormData();
+		dataimg.append('image', data);
+	
+		$.ajax({
+			url: 'http://localhost:3000/upload',
+			type:"post",
+			cache : false,
+			contentType : false,
+			processType : false,
+            processData:false,
+			data: dataimg,
+
+			success: function(result) {
+				console.log(result)
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		})
+	}
+</script>
+
+</html>
